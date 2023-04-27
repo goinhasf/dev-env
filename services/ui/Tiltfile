@@ -1,0 +1,9 @@
+include('../foo/Tiltfile')
+
+docker_compose(['../routing/docker-compose.yml', './docker-compose.yml'])
+
+docker_build('ui', '.',
+  dockerfile='Dockerfile.dev',
+  live_update = [
+    run('npm i', trigger='package.json'),
+  ])

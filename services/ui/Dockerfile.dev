@@ -1,0 +1,13 @@
+FROM node:16 as build
+WORKDIR /app
+COPY package*.json .
+RUN npm i
+
+COPY . .
+
+FROM build as intermediate
+RUN npm run build
+
+ENV PORT=80
+EXPOSE 80
+ENTRYPOINT [ "npm", "run", "dev" ]

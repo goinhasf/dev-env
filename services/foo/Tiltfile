@@ -1,0 +1,8 @@
+path = os.path.realpath('docker-compose.yml')
+
+def register_labels():
+  dc_resource('foo', labels=['Services'])
+
+def build_foo_compose():
+  return [path, register_labels]
+  

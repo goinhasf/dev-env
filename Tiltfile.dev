@@ -1,0 +1,26 @@
+load('services/routing/Tiltfile', 'build_routing_compose')
+load('services/kafka/Tiltfile', 'build_kafka_compose')
+load('services/foo/Tiltfile', 'build_foo_compose')
+load('services/bar/Tiltfile', 'build_bar_compose')
+
+def load_services(choices):
+  files = []
+  if "Routing" in choices:
+    files.append(build_routing_compose())
+  if "Kafka" in choices:
+    files.append(build_kafka_compose())
+  if "Foo" in choices:
+    files.append(build_foo_compose())
+  if "Bar" in choices:
+    files.append(build_bar_compose())
+  compose = []
+  labels = []
+
+  for [path, register] in files:
+    compose.append(path)
+    labels.append(register)
+  
+  docker_compose(compose)
+
+  for registerLabel in labels:
+    registerLabel()

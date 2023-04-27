@@ -1,0 +1,26 @@
+---
+version: '3'
+services:
+  foo:
+    image: foo:latest
+    environment:
+      - PORT=80
+    build:
+      context: .
+    labels:
+      # Enable this container to be mapped by traefik
+      # For more information, see: https://docs.traefik.io/providers/docker/#exposedbydefault
+      - 'traefik.enable=true'
+      # Define the network that should be used
+      - 'traefik.docker.network=api'
+      # URL to reach this container
+      - 'traefik.http.routers.foo.rule=Host(`api.docker.localhost`) && PathPrefix(`/foo`)'
+      # Activation of TLS
+      - 'traefik.http.routers.foo.tls=true'
+      - 'traefik.http.middlewares.foo-stripprefix.stripprefix.prefixes=/foo'
+      - 'traefik.http.routers.foo.middlewares=foo-stripprefix@docker'
+
+      # If port is different than 80, use the following service:
+      # - "traefik.http.services.<service_name>.loadbalancer.server.port=<port>"
+    networks:
+      - api

@@ -1,0 +1,60 @@
+services:
+  bar:
+    image: bar:latest
+    environment:
+      - PORT=80
+      - KAFKA_CONTROL_CENTER_URL=kafka-control-center:9021
+      - DB_URL=mongodb://root:example@bar-mongodb:27017/
+    labels:
+      # Enable this container to be mapped by traefik
+      # For more information, see: https://docs.traefik.io/providers/docker/#exposedbydefault
+      - 'traefik.enable=true'
+      # Define the network that should be used
+      - 'traefik.docker.network=api'
+      # URL to reach this container
+      - 'traefik.http.routers.bar.rule=Host(`api.docker.localhost`) && PathPrefix(`/bar`)'
+      # Activation of TLS
+      - 'traefik.http.routers.bar.tls=true'
+      - 'traefik.http.middlewares.bar-stripprefix.stripprefix.prefixes=/bar'
+      - 'traefik.http.routers.bar.middlewares=bar-stripprefix@docker'
+
+      # If port is different than 80, use the following service:
+      # - "traefik.http.services.<service_name>.loadbalancer.server.port=<port>"
+    networks:
+      - api
+      - bar-db
+
+  bar-mongodb:
+    image: arm64v8/mongo:6
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - api
+      - bar-db
+
+  bar-mongo-express:
+    image: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@bar-mongodb:27017/
+    labels:
+      # Enable this container to be mapped by traefik
+      # For more information, see: https://docs.traefik.io/providers/docker/#exposedbydefault
+      - 'traefik.enable=true'
+      # Define the network that should be used
+      - 'traefik.docker.network=api'
+      # URL to reach this container
+      - 'traefik.http.routers.bar.rule=Host(`bar-mongodb.docker.localhost`)'
+      - 'traefik.http.services.bar-mongo-express-service.loadbalancer.server.port=8081'
+      # Activation of TLS
+      - 'traefik.http.routers.bar.tls=true'
+    networks:
+      - api
+      - bar-db
+
+networks:
+  bar-db: {}

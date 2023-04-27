@@ -1,0 +1,21 @@
+---
+version: "3"
+services:
+  ui:
+    image: ui:latest
+    build:
+      context: ./ui
+    labels:
+      # Enable this container to be mapped by traefik
+      # For more information, see: https://docs.traefik.io/providers/docker/#exposedbydefault
+      - "traefik.enable=true"
+      # Define the network that should be used
+      - "traefik.docker.network=ui"
+      # URL to reach this container
+      - "traefik.http.routers.ui.rule=Host(`ui.docker.localhost`)"
+      # Activation of TLS
+      - "traefik.http.routers.ui.tls=true"
+      # If port is different than 80, use the following service:
+      # - "traefik.http.services.<service_name>.loadbalancer.server.port=<port>"
+    networks:
+      - ui

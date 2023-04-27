@@ -1,0 +1,10 @@
+path = os.path.abspath('./docker-compose.yml')
+
+def register_labels():
+  dc_resource('zookeeper', labels=["Kafka"])
+  dc_resource('broker', labels=["Kafka"])
+  dc_resource('schema-registry', labels=["Kafka"])
+  dc_resource('control-center', labels=["Kafka"])
+
+def build_kafka_compose():
+  return [path, register_labels]

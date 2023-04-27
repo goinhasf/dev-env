@@ -1,0 +1,10 @@
+path = os.path.abspath('./docker-compose.yml')
+def routing_compose_path():
+  return path
+
+def register_labels():
+  dc_resource('reverse-proxy', labels=["Routing"])
+
+def build_routing_compose():
+  return [path, register_labels]
+  

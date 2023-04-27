@@ -1,0 +1,10 @@
+path = os.path.realpath('docker-compose.yml')
+
+def register_labels():
+  dc_resource('bar', labels=['Services'])
+  dc_resource('bar-mongodb', labels=['Databases'])
+  dc_resource('bar-mongo-express', labels=['Databases'])
+
+def build_bar_compose():
+  return [path, register_labels]
+  

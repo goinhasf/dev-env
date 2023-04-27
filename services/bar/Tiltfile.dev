@@ -1,0 +1,13 @@
+load('../../Tiltfile.dev', 'load_services')
+
+def dev():
+  load_services(['Routing', 'Kafka', 'Bar'])
+  compose = read_yaml('docker-compose.yml')
+  compose['services']['bar']['ports'] = ["9229:9229", "9000:80"]
+  docker_build('bar', '.', 
+    live_update = [
+      sync('./src', '/app/src'),
+      run('npm i', trigger='package.json'),
+    ])
+
+dev()
