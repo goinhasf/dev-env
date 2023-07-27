@@ -1,4 +1,4 @@
-import mongo from 'mongodb';
+import * as mongo from 'mongodb';
 
 import config from './config';
 
@@ -13,8 +13,8 @@ const client = new mongo.MongoClient(config.dbUrl);
 export async function init(
   createCollections: boolean
 ): Promise<MessageCollection> {
-  const { db } = await client.connect();
-  const foo = db('foo');
+  const mongo = await client.connect();
+  const foo = mongo.db('foo');
 
   if (createCollections) {
     return await foo.createCollection('messages');
