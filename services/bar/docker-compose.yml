@@ -56,7 +56,7 @@ services:
       # Define the network that should be used
       - 'traefik.docker.network=api'
       # URL to reach this container
-      - 'traefik.http.routers.bar.rule=Host(`bar-mongodb.docker.localhost`)'
+      - 'traefik.http.routers.bar-mongo-express.rule=Host(`bar-mongodb-express.docker.localhost`)'
       - 'traefik.http.services.bar-mongo-express-service.loadbalancer.server.port=8081'
       # Activation of TLS
       - 'traefik.http.routers.bar.tls=true'
